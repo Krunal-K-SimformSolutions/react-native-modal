@@ -17,6 +17,7 @@ import {
   View,
   ViewStyle,
   ViewProps,
+  AppState,
 } from 'react-native';
 import * as PropTypes from 'prop-types';
 import * as animatable from 'react-native-animatable';
@@ -52,6 +53,7 @@ type State = {
   deviceHeight: number;
   isSwipeable: boolean;
   pan: OrNull<Animated.ValueXY>;
+  appState: OrNull<object>;
 };
 
 const defaultProps = {
@@ -192,6 +194,7 @@ export class ReactNativeModal extends React.Component<ModalProps, State> {
     deviceHeight: Dimensions.get('window').height,
     isSwipeable: !!this.props.swipeDirection,
     pan: null,
+    appState: null,
   };
 
   isTransitioning = false;
@@ -253,6 +256,7 @@ export class ReactNativeModal extends React.Component<ModalProps, State> {
       this.open();
     }
     BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPress);
+    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillUnmount() {
@@ -267,6 +271,7 @@ export class ReactNativeModal extends React.Component<ModalProps, State> {
       InteractionManager.clearInteractionHandle(this.interactionHandle);
       this.interactionHandle = null;
     }
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   componentDidUpdate(prevProps: ModalProps) {
@@ -586,6 +591,14 @@ export class ReactNativeModal extends React.Component<ModalProps, State> {
         this.setState({deviceWidth, deviceHeight});
       }
     }
+  };
+
+  handleAppStateChange = (nextAppState) => {
+    const { appState, pan } = this.state;
+    if (appState && appState.match(/inactive|background/) && nextAppState === 'active') {
+        pan?.setValue({ x: 0, y: 0 });
+    }
+    this.setState({ appState: nextAppState });
   };
 
   open = () => {

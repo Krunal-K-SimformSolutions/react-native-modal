@@ -74,7 +74,7 @@ function WrapperComponent() {
 }
 ```
 
-The `isVisible` prop is the only prop you'll really need to make the modal work: you should control this prop value by saving it in your wrapper component state and setting it to `true` or `false` when needed.
+The `isVisible` prop is the only prop you'll really need to make the modal work: you should control this prop value by saving it in your state and setting it to `true` or `false` when needed.
 
 ## A complete example
 
@@ -109,8 +109,6 @@ function ModalTester() {
     </View>
   );
 }
-
-export default ModalTester;
 ```
 
 For a more complex example take a look at the `/example` directory.
@@ -259,7 +257,7 @@ That said, I would strongly advice against using multiple modals at the same tim
 
 ### The StatusBar style changes when the modal shows up
 
-This issue has been discussed [here](https://github.com/react-native-community/react-native-modal/issues/50).  
+This issue has ben discussed [here](https://github.com/react-native-community/react-native-modal/issues/50).  
 The TLDR is: it's a know React-Native issue with the Modal component 😞
 
 ### The modal is not covering the entire screen
@@ -305,7 +303,7 @@ You can provide an event handler to the custom backdrop element to dismiss the m
 
 ```javascript
 <Modal
-  isVisible={isModalVisible}
+  isVisible={this.state.isVisible}
   customBackdrop={
     <TouchableWithoutFeedback onPress={dismissModalHandler}>
       <View style={{ flex: 1 }} />
